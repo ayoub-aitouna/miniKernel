@@ -38,7 +38,8 @@ jmp $
 
 %include "_write.asm"
 
-Hello_world db "Hello World!!", 0
+Hello_world:
+    db "Hello World!!", 0
 
 numbers:
     db "0123456789", 0
