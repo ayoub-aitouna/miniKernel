@@ -1,49 +1,44 @@
 [org 0x7c00]
+VAAR equ 60
+mov [BOOT_DRIVE], dl ; BIOS stors the boot drivr index in dl 
 
+; setup stack base pointer
 mov bp , 0x8000
+;setup stack pointer
 mov sp , bp
 
-;mov b1, 10 MOD 2
+mov bx, 0x9000
+mov dh, 2
+mov dl, [BOOT_DRIVE]
+call load_disk
 
-mov al, bl
-call print 
 
-mov bx , 30
 
-cmp bx, 4
-jle target_1
+mov dx, [0x9000]
+call _write_hex
 
-cmp bx, 40
-jl target_2
+mov al, ' '
+call print
 
-mov al , 'C'
-jmp end_target
+mov dx, [0x9000 + 512]
+call _write_hex
 
-target_1:
-    mov al , 'A'
-    jmp end_target
-
-target_2:
-    mov dx, Hello_world 
-    mov al , dl
-
-end_target:
-
-;call my_print_function
-mov bx, Hello_world
-call _write
 
 jmp $
 
+%include "lib/_write.asm"
+%include "lib/_write_hex.asm"
+%include "lib/load_disk.asm"
 
-%include "_write.asm"
 
-Hello_world:
-    db "Hello World!!", 0
 
-numbers:
-    db "0123456789", 0
+
+BOOT_DRIVE: db 0
 
 times 510 - ($ - $$) db 0
-
 dw 0xaa55
+
+
+times 256 dw 0xdada
+times 256 dw 0xface
+
