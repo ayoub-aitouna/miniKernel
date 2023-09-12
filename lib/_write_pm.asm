@@ -2,7 +2,7 @@
 
 ; define constants
 VIDOE_MEMORY equ 0xb8000
-WHITE_ON_BLACK equ 0x01
+WHITE_ON_BLACK equ 0x0f
 
  _write_pm:
      pusha
