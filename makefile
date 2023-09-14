@@ -1,8 +1,8 @@
 NAME =  bin/os-image
-SRC		= $(wildcard Kernel/*.c)
+SRC		= $(wildcard kernel/*.c driver/*.c)
 OBJ_DIR	= .compiled
 
-KERNEL_ENTRY = Kernel/kernel_entry.asm
+KERNEL_ENTRY = kernel/kernel_entry.asm
 
 OBJ		= $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC))
 
