@@ -18,12 +18,12 @@ call switch_to_pm
 
 jmp $
 
-%include "lib/_write.asm"
-%include "lib/_write_hex.asm"
-%include "lib/load_disk.asm"
-%include "gdt.asm"
-%include "lib/_write_pm.asm"
-%include "switch_to_pm.asm"
+%include "boot/lib/_write.asm"
+%include "boot/lib/_write_hex.asm"
+%include "boot/lib/load_disk.asm"
+%include "boot/gdt.asm"
+%include "boot/lib/_write_pm.asm"
+%include "boot/switch_to_pm.asm"
 
 [bits 16]
 load_kernel:
@@ -31,7 +31,7 @@ load_kernel:
     call _write
  
     mov bx, KERNEL_OFFEST ; Read from disk and store in 0x1000
-    mov dh, 2
+    mov dh, 15
     mov dl, [BOOT_DRIVE]
     call load_disk
     ret

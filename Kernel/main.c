@@ -1,14 +1,37 @@
-#define BG_FG_COLOR 0x0f
-void main () {
-    char * video_memory = ( char *) 0xb8000;
 
-    int i = 0;
-    while (i < 10)
+char *video_memory;
+
+void putchar(char c)
+{
+    *video_memory++ = c;
+    *video_memory++ = 0x0f;
+}
+
+void clear()
+{
+    int row = 0;
+    int cols = 0;
+    while (row < 80)
     {
-        *video_memory = 'A';
-        video_memory++;
-        *video_memory = BG_FG_COLOR;
-        video_memory++;
-        i++;
+        cols = 0;
+        while (cols < 25)
+        {
+            putchar(' ');
+            cols++;
+        }
+        row++;
+    }
+    video_memory = (char *)0xb8000;
+}
+
+void main()
+{
+    video_memory = (char *)0xb8000;
+    clear();
+
+    char *str = "Hello World";
+    while (*str)
+    {
+        putchar(*str++);
     }
 }

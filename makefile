@@ -1,23 +1,42 @@
-kernalbin = kernel.bin
-bootbin = boot_sector.bin
+NAME =  bin/os-image
+SRC		= $(wildcard Kernel/*.c)
+OBJ_DIR	= .compiled
+
+KERNEL_ENTRY = Kernel/kernel_entry.asm
+
+OBJ		= $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC))
+
+KERNEL_ENTRY_OBJ = $(patsubst %.asm, $(OBJ_DIR)/%.o, $(KERNEL_ENTRY))
+
+cc		= gcc
+CFLAGS	= -ffreestanding -m32
+
+kernelbin = bin/kernel.bin
+bootbin = bin/boot_sector.bin
 
 
-NAME = os-image
+all: run
 
-all:${NAME}
+$(OBJ_DIR)/%.o : %.c
+	@mkdir -p $(dir $@)
+	@$(cc) $(CFLAGS) -c $< -o $@ 
 
+$(KERNEL_ENTRY_OBJ) : $(KERNEL_ENTRY)
+	@mkdir -p $(dir $@)
+	nasm $^ -f elf32 -o $(KERNEL_ENTRY_OBJ)
 
-$(kernalbin):
-	gcc -ffreestanding -c Kernel/main.c -o kernel.o
-	ld --entry=0x1000 -o kernel.bin -Ttext=0x1000 kernel.o --oformat binary
+$(kernelbin) : $(KERNEL_ENTRY_OBJ) $(OBJ) 
+	ld -m elf_i386 -o kernel.elf  $^
+	objcopy -O binary kernel.elf $(kernelbin)
 
-${bootbin}:
-	nasm -f bin boot_sector.asm -o ${bootbin}
+$(bootbin) : boot/boot_sector.asm
+	nasm -f bin $< -o $@
 
+${NAME}: $(bootbin) $(kernelbin)
+	cat $^  > ${NAME}
 
-${NAME}: clean $(kernalbin) ${bootbin}
-	cat ${bootbin} $(kernalbin)  > ${NAME}
-	qemu-system-x86_64 -hda ${NAME}
+run: clean $(NAME)
+	qemu-system-x86_64 -fda ${NAME}
 
 clean:
-	rm -rf kernel.o ${bootbin} $(kernalbin) ${NAME}
+	rm -rf $(OBJ) $(bootbin) $(kernelbin) ${NAME}
