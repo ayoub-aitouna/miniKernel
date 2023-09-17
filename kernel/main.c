@@ -2,6 +2,8 @@
 
 char *video_memory;
 
+
+
 void putchar(char c)
 {
     *video_memory++ = c;
@@ -31,9 +33,9 @@ void main()
     clear();
 
     char *str = "Hello World";
-    // while (*str)
-    // {
-    //     putchar(*str++);
-    // }
-    print_char('X', 1, 0);
+    while (*str)
+    {
+        putchar(*str++);
+    }
+    // print_char('R', 0,  1, WHITE_ON_BLACK);
 }
