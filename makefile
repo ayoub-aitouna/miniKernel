@@ -26,10 +26,12 @@ $(KERNEL_ENTRY_OBJ) : $(KERNEL_ENTRY)
 	nasm $^ -f elf32 -o $(KERNEL_ENTRY_OBJ)
 
 $(kernelbin) : $(KERNEL_ENTRY_OBJ) $(OBJ) 
-	ld -m elf_i386 -o kernel.elf  $^
+	@mkdir -p $(dir $@)
+	ld -m elf_i386 -Ttext=0x1000 -o kernel.elf  $^
 	objcopy -O binary kernel.elf $(kernelbin)
 
 $(bootbin) : boot/boot_sector.asm
+	@mkdir -p $(dir $@)
 	nasm -f bin $< -o $@
 
 ${NAME}: $(bootbin) $(kernelbin)
