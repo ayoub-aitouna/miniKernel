@@ -1,3 +1,4 @@
+#include "../driver/screen.h"
 
 char *video_memory;
 
@@ -30,8 +31,9 @@ void main()
     clear();
 
     char *str = "Hello World";
-    while (*str)
-    {
-        putchar(*str++);
-    }
+    // while (*str)
+    // {
+    //     putchar(*str++);
+    // }
+    print_char('X', 1, 0);
 }
