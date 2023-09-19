@@ -1,5 +1,5 @@
 NAME =  bin/os-image
-SRC		= $(wildcard kernel/*.c driver/*.c)
+SRC		= $(wildcard kernel/*.c driver/**/*.c)
 OBJ_DIR	= .compiled
 
 KERNEL_ENTRY = kernel/kernel_entry.asm
@@ -19,7 +19,7 @@ all: run
 
 $(OBJ_DIR)/%.o : %.c
 	@mkdir -p $(dir $@)
-	@$(cc) $(CFLAGS) -c $< -o $@ 
+	$(cc) $(CFLAGS) -c $< -o $@ 
 
 $(KERNEL_ENTRY_OBJ) : $(KERNEL_ENTRY)
 	@mkdir -p $(dir $@)
