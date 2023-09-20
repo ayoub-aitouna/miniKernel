@@ -29,17 +29,6 @@ void clear()
     video_memory = (char *)0xb8000;
 }
 
-void ft_putnbr(int nbr)
-{
-    if(nbr < 0)
-    {
-        nbr *= -1;
-        putchar('-');
-    }
-    if(nbr >= 10)
-        ft_putnbr(nbr / 10);
-    putchar((nbr % 10) + 48);
-}
 
 void main()
 {
