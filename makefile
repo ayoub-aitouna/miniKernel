@@ -42,3 +42,11 @@ run: clean $(NAME)
 
 clean:
 	rm -rf $(OBJ) $(bootbin) $(kernelbin) ${NAME}
+
+
+update:
+	$(shell git add .)
+	@echo "Enter the commit message"
+	@read message; \
+	git commit -m "$$message"
+	
