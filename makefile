@@ -1,5 +1,5 @@
 NAME =  bin/os-image
-SRC		= $(wildcard kernel/*.c driver/**/*.c)
+SRC		= $(wildcard kernel/*.c driver/*.c)
 OBJ_DIR	= .compiled
 
 KERNEL_ENTRY = kernel/kernel_entry.asm
