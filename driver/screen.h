@@ -13,4 +13,15 @@
 void put_str(char *str);
 void ft_putnbr(int nbr);
 
+
+/**********************************/
+/******* internal functions *******/
+/**********************************/
+
+static int get_cursor();
+static void set_cursor(int offset);
+static void print_char(char c, int row, int cols, char attr);
+static void push_char(int offset, char c, int attr);
+static int get_screen_offset(int row, int cols);
+void clear_screen();
 #endif

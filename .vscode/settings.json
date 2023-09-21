@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "screen.h": "c"
+        "screen.h": "c",
+        "port.h": "c"
     }
 }

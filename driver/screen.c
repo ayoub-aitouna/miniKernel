@@ -3,8 +3,44 @@
 
 static void push_char(int offset, char c, int attr)
 {
-    *(char *)(VIDEO_ADDRESS + offset) = c;
-    *(char *)(VIDEO_ADDRESS + offset + 1) = attr;
+    ((char *)VIDEO_ADDRESS)[offset] = c;
+    if (!attr)
+        ((char *)VIDEO_ADDRESS)[offset + 1] = attr;
+}
+
+static char pop_char(int offset)
+{
+    return ((char *)VIDEO_ADDRESS)[offset];
+}
+
+static int scrool(int offset)
+{
+    // if (offset < get_screen_offset(MAX_ROWS, MAX_COLS))
+    //     return (offset);
+    for (int i = 1; i < MAX_COLS; i++)
+    {
+        for (int j = 0; j < MAX_ROWS; j++)
+        {
+            push_char(get_screen_offset(j, i - 1), pop_char(get_screen_offset(j, i)), 0);
+        }
+    }
+    for (int j = 0; j < MAX_ROWS; j++)
+    {
+        push_char(get_screen_offset(j, MAX_COLS - 1), ' ', 0);
+    }
+    return get_screen_offset(0, MAX_COLS - 2);
+}
+
+void clear_screen()
+{
+    int i, j;
+    for (i = 0; i < MAX_ROWS; i++)
+    {
+        for (j = 0; j < MAX_COLS; j++)
+        {
+            print_char(' ', i, j, WHITE_ON_BLACK);
+        }
+    }
 }
 
 static void print_char(char c, int row, int cols, char attr)
@@ -21,8 +57,7 @@ static void print_char(char c, int row, int cols, char attr)
         offset = get_screen_offset(offset / (2 * MAX_ROWS), 79);
     else
         push_char(offset, c, attr);
-    offset += 2;
-    set_cursor(offset);
+    set_cursor(scrool(offset += 2));
 }
 
 static int get_screen_offset(int row, int cols)
