@@ -1,92 +1,89 @@
 #include "screen.h"
 #include "port.h"
 
-// void putchar(char c, int offset)
-// {
-//     char *video_memory;
+char *Display_at(int height, int width)
+{
+    return ((char *)VIDEO_ADDRESS + get_screen_offset(height, width));
+}
 
-//     video_memory = VIDEO_ADDRESS;
-//     *(video_memory + offset) = c;
-//     *(video_memory + (offset + 1)) = 0x0f;
-// }
-static void push_char(int offset, char c, int attr)
+void push_char(int offset, char c, int attr)
 {
     ((char *)VIDEO_ADDRESS)[offset] = c;
     ((char *)VIDEO_ADDRESS)[offset + 1] = attr;
 }
 
-static char pop_char(int offset)
+char pop_char(int offset)
 {
     return ((char *)VIDEO_ADDRESS)[offset];
 }
 
-static int scrool(int offset)
+int scrool(int offset)
 {
-    int i, j;
-    if (offset <= get_screen_offset(23, 0))
+    int width = 0;
+    int height = 1;
+
+    if (offset < get_screen_offset(MAX_HEIGHT - 1, MAX_WIDTH - 1))
         return (offset);
-    int row = 0;
-    int cols;
-    while (row < 10)
-    {
-        cols = 1;
 
-        while (cols < 10)
+    while (height < MAX_HEIGHT)
+    {
+        width = 0;
+        while (width < MAX_WIDTH * 2)
         {
-            char c = pop_char(get_screen_offset(cols, row));
-            print_char(c, cols, row, WHITE_ON_BLACK);
-            cols++;
+            *Display_at(height - 1, width) = *Display_at(height, width);
+            width++;
         }
-        row++;
+        height++;
     }
 
-    for (int j = 0; j < MAX_COLS; j++)
+    width = 0;
+    while (width < MAX_WIDTH * 2)
     {
-        push_char(get_screen_offset(MAX_ROWS, j), ' ', 0);
+        *Display_at(MAX_HEIGHT - 1, width) = ' ';
+        width++;
     }
-    return get_screen_offset(MAX_ROWS - 2, 1);
+
+    return (get_screen_offset(MAX_HEIGHT - 1, 0));
 }
 
 void clear_screen()
 {
-    int row = 0;
-    int cols = 0;
-    while (row < 80)
+    int height = 0;
+    int width = 0;
+    while (height < MAX_WIDTH)
     {
-        cols = 0;
+        width = 0;
 
-        while (cols < 25)
+        while (width < MAX_HEIGHT)
         {
-            push_char((row * MAX_ROWS + cols) * 2, ' ', WHITE_ON_BLACK);
-            cols++;
+            push_char((height * MAX_HEIGHT + width) * 2, ' ', WHITE_ON_BLACK);
+            width++;
         }
-        row++;
+        height++;
     }
     set_cursor(0);
 }
 
-static void print_char(char c, int row, int cols, char attr)
+void print_char(char c, int height, int width, char attr)
 {
     int offset;
     if (!attr)
         attr = WHITE_ON_BLACK;
-    if (row >= 0 && cols >= 0)
-        offset = get_screen_offset(row, cols);
+    if (height >= 0 && width >= 0 && width < MAX_WIDTH && height < MAX_HEIGHT)
+        offset = get_screen_offset(height, width);
     else
         offset = get_cursor();
     if (c == '\n')
-    {
-        push_char(offset, c, 0x00);
-        offset = get_screen_offset(offset / (2 * MAX_COLS), 79);
-    }
+        offset = get_screen_offset(offset / (2 * MAX_WIDTH), LAST_WIDTH_INDEX);
     else
         push_char(offset, c, attr);
-    set_cursor(scrool(offset += 2));
+    offset = scrool(offset += 2);
+    set_cursor(offset);
 }
 
-int get_screen_offset(int row, int col)
+int get_screen_offset(int height, int width)
 {
-    return ((row * MAX_COLS + col) * 2);
+    return ((height * MAX_WIDTH + width) * 2);
 }
 
 int get_cursor()
