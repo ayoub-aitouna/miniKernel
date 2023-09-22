@@ -1,11 +1,18 @@
 #include "screen.h"
 #include "port.h"
 
+// void putchar(char c, int offset)
+// {
+//     char *video_memory;
+
+//     video_memory = VIDEO_ADDRESS;
+//     *(video_memory + offset) = c;
+//     *(video_memory + (offset + 1)) = 0x0f;
+// }
 static void push_char(int offset, char c, int attr)
 {
     ((char *)VIDEO_ADDRESS)[offset] = c;
-    if (!attr)
-        ((char *)VIDEO_ADDRESS)[offset + 1] = attr;
+    ((char *)VIDEO_ADDRESS)[offset + 1] = attr;
 }
 
 static char pop_char(int offset)
@@ -15,32 +22,47 @@ static char pop_char(int offset)
 
 static int scrool(int offset)
 {
-    // if (offset < get_screen_offset(MAX_ROWS, MAX_COLS))
-    //     return (offset);
-    for (int i = 1; i < MAX_COLS; i++)
+    int i, j;
+    if (offset <= get_screen_offset(23, 0))
+        return (offset);
+    int row = 0;
+    int cols;
+    while (row < 10)
     {
-        for (int j = 0; j < MAX_ROWS; j++)
+        cols = 1;
+
+        while (cols < 10)
         {
-            push_char(get_screen_offset(j, i - 1), pop_char(get_screen_offset(j, i)), 0);
+            char c = pop_char(get_screen_offset(cols, row));
+            print_char(c, cols, row, WHITE_ON_BLACK);
+            cols++;
         }
+        row++;
     }
-    for (int j = 0; j < MAX_ROWS; j++)
+
+    for (int j = 0; j < MAX_COLS; j++)
     {
-        push_char(get_screen_offset(j, MAX_COLS - 1), ' ', 0);
+        push_char(get_screen_offset(MAX_ROWS, j), ' ', 0);
     }
-    return get_screen_offset(0, MAX_COLS - 2);
+    return get_screen_offset(MAX_ROWS - 2, 1);
 }
 
 void clear_screen()
 {
-    int i, j;
-    for (i = 0; i < MAX_ROWS; i++)
+    int row = 0;
+    int cols = 0;
+    while (row < 80)
     {
-        for (j = 0; j < MAX_COLS; j++)
+        cols = 0;
+
+        while (cols < 25)
         {
-            print_char(' ', i, j, WHITE_ON_BLACK);
+            push_char((row * MAX_ROWS + cols) * 2, ' ', WHITE_ON_BLACK);
+            cols++;
         }
+        row++;
     }
+    set_cursor(0);
 }
 
 static void print_char(char c, int row, int cols, char attr)
@@ -52,20 +74,22 @@ static void print_char(char c, int row, int cols, char attr)
         offset = get_screen_offset(row, cols);
     else
         offset = get_cursor();
-
     if (c == '\n')
-        offset = get_screen_offset(offset / (2 * MAX_ROWS), 79);
+    {
+        push_char(offset, c, 0x00);
+        offset = get_screen_offset(offset / (2 * MAX_COLS), 79);
+    }
     else
         push_char(offset, c, attr);
     set_cursor(scrool(offset += 2));
 }
 
-static int get_screen_offset(int row, int cols)
+int get_screen_offset(int row, int col)
 {
-    return (2 * (MAX_ROWS * row + cols));
+    return ((row * MAX_COLS + col) * 2);
 }
 
-static int get_cursor()
+int get_cursor()
 {
     // reg 14: which is the high byte of the cursor's offset
     // reg 15: which is the low byte of the cursor's offset
@@ -77,7 +101,7 @@ static int get_cursor()
     return (offset * 2);
 }
 
-static void set_cursor(int offset)
+void set_cursor(int offset)
 {
     int index = offset / 2;
     port_byte_out(REG_SCREEN_CTRL, 14);

@@ -2,9 +2,19 @@
 
 void main()
 {
-    // while (1)
-    // {
-        // put_str("-----\n");
-    // }
     clear_screen();
+
+    int i = 0;
+    int j;
+    while (i <= 405)
+    {
+        j = 0;
+        while (j < i)
+        {
+            put_str("-");
+            j++;
+        }
+        put_str("\n");
+        i++;
+    }
 }
