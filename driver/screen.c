@@ -64,6 +64,11 @@ void clear_screen()
     set_cursor(0);
 }
 
+void putchar(char c)
+{
+    print_char(c, -1, -1, WHITE_ON_BLACK);
+}
+
 void print_char(char c, int height, int width, char attr)
 {
     int offset;

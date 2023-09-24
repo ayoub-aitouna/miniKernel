@@ -1,5 +1,5 @@
 NAME =  bin/os-image
-SRC		= $(wildcard kernel/*.c driver/*.c)
+SRC		= $(shell find . -type f -name "*.c")
 OBJ_DIR	= .compiled
 
 KERNEL_ENTRY = kernel/kernel_entry.asm
@@ -27,7 +27,7 @@ $(KERNEL_ENTRY_OBJ) : $(KERNEL_ENTRY)
 
 $(kernelbin) : $(KERNEL_ENTRY_OBJ) $(OBJ) 
 	@mkdir -p $(dir $@)
-	ld -m elf_i386 -Ttext=0x1000 -o kernel.elf  $^
+	ld -m elf_i386 -Ttext=0x1000 -o kernel.elf  $^ 
 	objcopy -O binary kernel.elf $(kernelbin)
 
 $(bootbin) : boot/boot_sector.asm

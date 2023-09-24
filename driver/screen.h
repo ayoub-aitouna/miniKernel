@@ -15,6 +15,7 @@
 
 void put_str(char *str);
 void ft_putnbr(int nbr);
+void putchar(char c);
 
 /**********************************/
 /******* internal functions *******/

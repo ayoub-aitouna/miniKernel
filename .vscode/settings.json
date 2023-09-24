@@ -1,6 +1,11 @@
 {
     "files.associations": {
+        "*.c": "c",
         "screen.h": "c",
-        "port.h": "c"
+        "port.h": "c",
+        "stdarg.h": "c",
+        "libft.h": "c",
+        "stdint.h": "c",
+        "printf.h": "c"
     }
 }
