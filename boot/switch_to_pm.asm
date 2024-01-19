@@ -1,7 +1,7 @@
 [bits 16]
 
 switch_to_pm:
-     
+    cli
 
     lgdt [gdt_descriptor]
     
@@ -26,5 +26,4 @@ init_pm:
     mov esp, ebp
 
     call BEGIN_PM
-
 
