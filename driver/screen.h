@@ -3,6 +3,10 @@
 
 #define VIDEO_ADDRESS 0xb8000
 #define WHITE_ON_BLACK 0x0f
+#define BLACK_ON_WHITE 0x0F
+#define GREEN_ON_BLACK 0x02
+#define RED_ON_BLACK 0x04
+#define BLUE_ON_BLACK 0x01
 
 #define MAX_HEIGHT 25
 
