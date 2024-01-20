@@ -1,0 +1,39 @@
+returncode: 1
+stdout:
+> e_commerce_dashboard@1.0.0 start /home/ipshqxog/backend
+> node dist/index.js
+
+ipshqxog_db
+stderr:
+npm WARN lifecycle The node binary used for scripts is /home/ipshqxog/nodevenv/backend/14/bin/node but npm is using /opt/alt/alt-nodejs14/root/usr/bin/node itself. Use the `--scripts-prepend-node-path` option to include the path for the node binary npm was executed with.
+events.js:377
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use :::3000
+    at Server.setupListenHandle [as _listen2] (net.js:1331:16)
+    at listenInCluster (net.js:1379:12)
+    at Server.listen (net.js:1465:7)
+    at Function.listen (/home/ipshqxog/backend/node_modules/express/lib/application.js:635:24)
+    at /home/ipshqxog/backend/dist/index.js:68:9
+    at Generator.next (<anonymous>)
+    at fulfilled (/home/ipshqxog/backend/dist/index.js:28:58)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (net.js:1358:8)
+    at processTicksAndRejections (internal/process/task_queues.js:82:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '::',
+  port: 3000
+}
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! e_commerce_dashboard@1.0.0 start: `node dist/index.js`
+npm ERR! Exit status 1
+npm ERR! 
+npm ERR! Failed at the e_commerce_dashboard@1.0.0 start script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     /home/ipshqxog/.npm/_logs/2024-01-20T00_56_26_233Z-debug.log

@@ -6,6 +6,7 @@
         "stdarg.h": "c",
         "libft.h": "c",
         "stdint.h": "c",
-        "printf.h": "c"
+        "printf.h": "c",
+        "idt.h": "c"
     }
 }
