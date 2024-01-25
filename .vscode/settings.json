@@ -1,5 +1,6 @@
 {
     "files.associations": {
+        "*.embeddedhtml": "html",
         "*.c": "c",
         "screen.h": "c",
         "port.h": "c",
@@ -7,6 +8,7 @@
         "libft.h": "c",
         "stdint.h": "c",
         "printf.h": "c",
-        "idt.h": "c"
+        "idt.h": "c",
+        "string.h": "c"
     }
 }

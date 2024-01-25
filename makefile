@@ -2,14 +2,14 @@ NAME =  bin/os-image
 SRC		= $(shell find . -type f -name "*.c")
 OBJ_DIR	= .compiled
 
-KERNEL_ENTRY = kernel/kernel_entry.asm
+KERNEL_ENTRY = $(shell find ./kernel -type f -name "*.asm")
 
 OBJ		= $(patsubst %.c, $(OBJ_DIR)/%.o, $(SRC))
 
 KERNEL_ENTRY_OBJ = $(patsubst %.asm, $(OBJ_DIR)/%.o, $(KERNEL_ENTRY))
 
-cc		= gcc
-CFLAGS	= -ffreestanding -m32
+cc		= /usr/opt/cross/bin/i686-elf-gcc
+CFLAGS	= -ffreestanding -g -o2
 
 kernelbin = bin/kernel.bin
 bootbin = bin/boot_sector.bin
@@ -21,9 +21,10 @@ $(OBJ_DIR)/%.o : %.c
 	@mkdir -p $(dir $@)
 	$(cc) $(CFLAGS) -c $< -o $@ 
 
-$(KERNEL_ENTRY_OBJ) : $(KERNEL_ENTRY)
+
+$(OBJ_DIR)/%.o : %.asm
 	@mkdir -p $(dir $@)
-	nasm $^ -f elf32 -o $(KERNEL_ENTRY_OBJ)
+	nasm $^ -f elf32 -o $@
 
 $(kernelbin) : $(KERNEL_ENTRY_OBJ) $(OBJ) 
 	@mkdir -p $(dir $@)
@@ -38,7 +39,7 @@ ${NAME}: $(bootbin) $(kernelbin)
 	cat $^  > ${NAME}
 
 run: clean $(NAME)
-	qemu-system-x86_64 -fda ${NAME}
+	qemu-system-x86_64  -curses -fda   ${NAME}
 
 clean:
 	rm -rf $(OBJ) $(bootbin) $(kernelbin) ${NAME}

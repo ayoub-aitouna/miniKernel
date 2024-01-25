@@ -52,31 +52,29 @@ int print_and_calc_str(char *str)
 
 int print_by_format(va_list ap, char c)
 {
-	int printed_index;
+    int printed_index;
 
-	printed_index = 0;
-	if (c == 'c')
-	{
-		// putchar('a');
-		putchar(va_arg(ap, int));
-		printed_index++;
-	}
-	else if (c == 's')
-		printed_index += print_and_calc_str(va_arg(ap, char *));
-	else if (c == 'p')
-		printed_index += print_ptr_adress(va_arg(ap, size_t));
-	else if ((c == 'd' || c == 'i'))
-		printed_index += print_and_calc_num(va_arg(ap, int));
-	else if (c == 'u')
-		ft_put_unsigned(va_arg(ap, unsigned int), &printed_index);
-	else if ((c == 'x' || c == 'X'))
-		printed_index += print_hex(va_arg(ap, int), c);
-	else if (c == '%')
-	{
-		putchar(c);
-		printed_index++;
-	}
-	return (printed_index);
+    printed_index = 0;
+    if (c == 'c')
+    {
+        printed_index += print_and_calc_num(va_arg(ap, int));
+    }
+    else if (c == 's')
+        printed_index += print_and_calc_str(va_arg(ap, char *));
+    else if (c == 'p')
+        printed_index += print_ptr_adress(va_arg(ap, size_t));
+    else if ((c == 'd' || c == 'i'))
+        printed_index += print_and_calc_num(va_arg(ap, int));
+    else if (c == 'u')
+        ft_put_unsigned(va_arg(ap, unsigned int), &printed_index);
+    else if ((c == 'x' || c == 'X'))
+        printed_index += print_hex(va_arg(ap, int), c);
+    else if (c == '%')
+    {
+        putchar(c);
+        printed_index++;
+    }
+    return (printed_index);
 }
 
 int printf(const char *str, ...)

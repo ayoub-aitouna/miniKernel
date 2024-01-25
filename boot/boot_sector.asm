@@ -31,7 +31,7 @@ load_kernel:
     call _write
  
     mov bx, KERNEL_OFFEST ; Read from disk and store in 0x1000
-    mov dh, 15
+    mov dh, 20
     mov dl, [BOOT_DRIVE]
     call load_disk
     ret
